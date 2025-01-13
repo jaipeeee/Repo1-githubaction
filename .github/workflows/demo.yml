@@ -1,0 +1,9 @@
+name: Hello World
+
+on: worflow_dispatch
+
+jobs:
+  runs-on: ubuntu
+  steps:
+    -name: greetings
+     run: echo "Hello World!"
