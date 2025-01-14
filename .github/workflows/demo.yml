@@ -1,9 +1,12 @@
 name: Hello World
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
 
 jobs:
-  build:
+  print:
     runs-on: ubuntu-latest
 
     steps:
