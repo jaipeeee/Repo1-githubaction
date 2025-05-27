@@ -6,13 +6,11 @@ on:
       cluster:
         description: "Cluster target"
         required: true
+        type: choice
         options:
           - ccd01devawx
           - ccd07-ibr-nucleus
           - ccd13cisawx
-    
-  push:
-    branches: [master]
 
 jobs:
   print:
