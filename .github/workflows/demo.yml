@@ -18,4 +18,4 @@ jobs:
 
     steps:
     - name: greetings
-      run: echo "You have selected {{ inputs.cluster }}!"
+      run: echo "You have selected ${{ inputs.cluster }}!"
