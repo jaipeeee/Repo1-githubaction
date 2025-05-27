@@ -2,6 +2,15 @@ name: Hello World
 
 on:
   workflow_dispatch:
+    inputs:
+      cluster:
+        description: "Cluster target"
+        required: true
+        options:
+          - ccd01devawx
+          - ccd07-ibr-nucleus
+          - ccd13cisawx
+    
   push:
     branches: [master]
 
@@ -11,4 +20,4 @@ jobs:
 
     steps:
     - name: greetings
-      run: echo "Hello World!"
+      run: echo "You have selected {{ inputs.cluster }}!"
