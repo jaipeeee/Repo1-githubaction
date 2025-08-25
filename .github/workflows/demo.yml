@@ -4,7 +4,7 @@ on:
   workflow_dispatch
 
 jobs:
-  print:
+  print-variable_value:
     runs-on: ubuntu-latest
 
     steps:
