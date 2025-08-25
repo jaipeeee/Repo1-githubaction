@@ -1,2 +1,2 @@
 welcome: "Hello World!"
-testvariable: "Value of test"
+testvariable: "Doing Great"
