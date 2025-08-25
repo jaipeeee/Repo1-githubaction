@@ -1,7 +1,7 @@
-name: Hello World
+name: GitHub Action Workflow Practice
 
 on:
-  workflow_dispatch:
+  workflow_dispatch
 
 jobs:
   print:
