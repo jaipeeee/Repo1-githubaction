@@ -8,20 +8,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: greetings
-      run: echo "You have selected ${{ inputs.cluster }}!"
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
     - name: Install yq
-      id: smtp_config
       run: |
-      # Install yq if not present
-      if ! command -v yq &> /dev/null; then
-          pip install yq
-      fi
+        if ! command -v yq &> /dev/null; then
+            pip install yq
+        fi
 
     - name: Print variable value
       run: |
-      CONFIG_FILE= helloworld.txt
-      get_value=$(yq '.testvariable' $CONFIG_FILE)
-      echo "testvariable=$testvariable" >> $GITHUB_EN
+      CONFIG_FILE=helloworld.txt
+      testvariable=$(yq '.testvariable' $CONFIG_FILE)
+      echo "testvariable=$testvariable" >> $GITHUB_ENV
       echo "Value of variable ${{ env.testvariable }}"
