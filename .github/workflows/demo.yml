@@ -2,15 +2,6 @@ name: Hello World
 
 on:
   workflow_dispatch:
-    inputs:
-      cluster:
-        description: "Cluster target"
-        required: true
-        type: choice
-        options:
-          - ccd01devawx
-          - ccd07-ibr-nucleus
-          - ccd13cisawx
 
 jobs:
   print:
@@ -19,3 +10,18 @@ jobs:
     steps:
     - name: greetings
       run: echo "You have selected ${{ inputs.cluster }}!"
+
+    - name: Install yq
+      id: smtp_config
+      run: |
+      # Install yq if not present
+      if ! command -v yq &> /dev/null; then
+          pip install yq
+      fi
+
+    - name: Print variable value
+      run: |
+      CONFIG_FILE= helloworld.txt
+      get_value=$(yq '.testvariable' $CONFIG_FILE)
+      echo "testvariable=$testvariable" >> $GITHUB_EN
+      echo "Value of variable ${{ env.testvariable }}"
