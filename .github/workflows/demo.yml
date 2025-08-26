@@ -1,5 +1,5 @@
 name: GitHub Action Workflow Practice
-run-name: '${{ github.actor }} started the pipeline'
+run-name: '${{ github.actor }} started the pipeline GitHub Action Workflow Practice'
 
 on:
   workflow_dispatch
