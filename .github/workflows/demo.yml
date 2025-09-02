@@ -22,6 +22,6 @@ jobs:
       run: |
         CONFIG_FILE=helloworld.txt
         testvariable=$(yq '.testvariable' $CONFIG_FILE)
-        echo "testvariable=$testvariable" >> $GITHUB_ENV
+        #echo "testvariable=$testvariable" >> $GITHUB_ENV
         echo "Value of variable $testvariable"
 
