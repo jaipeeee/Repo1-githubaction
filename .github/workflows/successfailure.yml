@@ -1,0 +1,21 @@
+name: Test Success or Failure flow
+on: workflow_dispatch
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Success
+        run: |
+            echo "Succees block"
+            exit 0
+
+      - name: Failure
+        run: |
+            echo "Failure Block"
+            exit 1
+
+      - name: Always works
+        if : always()
+        run: echo "Always Running"
