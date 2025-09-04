@@ -17,5 +17,5 @@ jobs:
             exit 1
 
       - name: Always works
-        if : always()
+        #if : always()
         run: echo "Always Running"
