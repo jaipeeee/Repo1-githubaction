@@ -1,0 +1,16 @@
+name: To check matrix cluster name
+on: workflow_dispatch
+
+jobs:
+  matrix-check:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Print something
+        run: echo "This is running on ${{ matrix.platform }}"
