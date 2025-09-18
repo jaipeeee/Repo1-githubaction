@@ -16,4 +16,4 @@ jobs:
         run: echo "This is running on ${{ matrix.platform }}"
 
       - name: Print strategy context
-        run: echo ${{ toJson(strategy) }}
+        run: echo '${{ toJson(strategy) }}'
