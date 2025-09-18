@@ -14,3 +14,6 @@ jobs:
     steps:
       - name: Print something
         run: echo "This is running on ${{ matrix.platform }}"
+
+      - name: Print strategy context
+        run: echo ${{ strategy }}
