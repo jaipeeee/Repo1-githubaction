@@ -9,10 +9,8 @@ jobs:
         cluster:
           - ubuntu-latest
           - windows-latest
+          - macOS
     runs-on: ${{ matrix.cluster }}
-    outputs:
-      cluster1: ${{ steps.result.outputs.cluster1 }}
-      cluster2: ${{ steps.result.outputs.cluster2 }}
 
     steps:
       - name: Deploy to ${{ matrix.cluster }}
@@ -24,32 +22,51 @@ jobs:
           if [[ "${{ matrix.cluster }}" == "ubuntu-latest" ]]; then
               exit 1
           fi
-          
-      - name: Set result
-        id: result
+
+      - name: Write status file
+        id: write-status
         if: always()
         run: |
+          status=success
           if [[ "${{ steps.deploy.outcome }}" == "failure" ]]; then
-            echo "${{ matrix.cluster }}=failed" >> $GITHUB_OUTPUT
-          else
-            echo "${{ matrix.cluster }}=success" >> $GITHUB_OUTPUT
+            status=failed
           fi
+          echo "${{ matrix.cluster }}=${status}" > status.txt
 
-  print-failed-clusters:
+      - name: Upload status artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: status-${{ matrix.cluster }}
+          path: status.txt
+
+  aggregate-status:
     needs: matrix-check
     runs-on: ubuntu-latest
-    if: |
-      always() && (
-        needs.matrix-check.outputs.cluster1 == 'failed' ||
-        needs.matrix-check.outputs.cluster2 == 'failed'
-      )
-
     steps:
-      - name: Print failed clusters
+      - name: Download ubuntu status artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: status-ubuntu-latest
+          path: ./statuses
+      - name: Download windows status artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: status-windows-latest
+          path: ./statuses
+
+      - name: Display failed clusters
         run: |
           failed_clusters=()
-
-          [[ "${{ needs.matrix-check.outputs.cluster1 }}" == "failed" ]] && failed_clusters+=("Ubuntu")
-          [[ "${{ needs.matrix-check.outputs.cluster2 }}" == "failed" ]] && failed_clusters+=("Windows")
+          for file in ./statuses/status-*.txt; do
+            cluster=$(cut -d'=' -f1 "$file")
+            state=$(cut -d'=' -f2 "$file")
+            if [[ "$state" == "failed" ]]; then
+              if [[ "$cluster" == "ubuntu-latest" ]]; then
+                failed_clusters+=(Ubuntu)
+              elif [[ "$cluster" == "windows-latest" ]]; then
+                failed_clusters+=(Windows)
+              fi
+            fi
+          done
 
           echo "Failed clusters: ${failed_clusters[*]}"
