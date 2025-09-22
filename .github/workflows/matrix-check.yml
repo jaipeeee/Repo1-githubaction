@@ -25,6 +25,7 @@ jobs:
       - name: Write status file
         id: write-status
         if: always()
+        shell: bash
         run: |
           status=success
           if [[ "${{ matrix.cluster }}" == "windows-latest" ]]; then
