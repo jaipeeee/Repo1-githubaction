@@ -9,7 +9,6 @@ jobs:
         cluster:
           - ubuntu-latest
           - windows-latest
-          - macOS
     runs-on: ${{ matrix.cluster }}
 
     steps:
@@ -34,7 +33,7 @@ jobs:
           echo "${{ matrix.cluster }}=${status}" > status.txt
 
       - name: Upload status artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: status-${{ matrix.cluster }}
           path: status.txt
@@ -44,12 +43,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download ubuntu status artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: status-ubuntu-latest
           path: ./statuses
       - name: Download windows status artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: status-windows-latest
           path: ./statuses
