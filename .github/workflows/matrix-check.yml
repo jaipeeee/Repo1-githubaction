@@ -57,18 +57,18 @@ jobs:
       - name: Parse and display failed clusters
         shell: bash
         run: |
-          failed_clusters=()
-          # Find all status.txt files inside the downloaded artifacts dir
-          find ./statuses -name status.txt | while read -r status_file; do
-            cluster=$(cut -d'=' -f1 "$status_file")
-            state=$(cut -d'=' -f2 "$status_file")
-            if [[ "$state" == "failed" ]]; then
-              failed_clusters+=("$cluster")
-            fi
-          done
+             failed_clusters=()
 
-          if [ ${#failed_clusters[@]} -eq 0 ]; then
-            echo "No failed clusters."
-          else
-            echo "Failed clusters: ${failed_clusters[*]}"
-          fi
+              while read -r status_file; do
+                cluster=$(cut -d'=' -f1 "$status_file")
+                state=$(cut -d'=' -f2 "$status_file")
+                if [[ "$state" == "failed" ]]; then
+                  failed_clusters+=("$cluster")
+                fi
+              done < <(find ./statuses -name status.txt)
+
+              if [ ${#failed_clusters[@]} -eq 0 ]; then
+                echo "No failed clusters."
+              else
+                echo "Failed clusters: ${failed_clusters[*]}"
+              fi
