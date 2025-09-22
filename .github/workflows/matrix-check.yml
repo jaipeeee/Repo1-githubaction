@@ -18,7 +18,7 @@ jobs:
         run: |
           echo "Deploying on ${{ matrix.cluster }}"
 
-          if [[ "${{ matrix.cluster }}" == "ubuntu-latest" ]]; then
+          if [[ "${{ matrix.cluster }}" == "windows-latest" ]]; then
               exit 1
           fi
 
