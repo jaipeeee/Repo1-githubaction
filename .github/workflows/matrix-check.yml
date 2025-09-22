@@ -6,14 +6,50 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform:
+        cluster:
           - ubuntu-latest
           - windows-latest
-    runs-on: ${{ matrix.platform }}
+    runs-on: ${{ matrix.cluster }}
+    outputs:
+      cluster1: ${{ steps.result.outputs.cluster1 }}
+      cluster2: ${{ steps.result.outputs.cluster2 }}
 
     steps:
-      - name: Print something
-        run: echo "This is running on ${{ matrix.platform }}"
+      - name: Deploy to ${{ matrix.cluster }}
+        id: deploy
+        continue-on-error: true
+        run: |
+          echo "Deploying on ${{ matrix.cluster }}"
 
-      - name: Print matrix context
-        run: echo '${{ toJson(matrix) }}'
+          if [[ "${{ matrix.cluster }}" == "ubuntu-latest" ]]; then
+              exit 1
+          fi
+          
+      - name: Set result
+        id: result
+        if: always()
+        run: |
+          if [[ "${{ steps.deploy.outcome }}" == "failure" ]]; then
+            echo "${{ matrix.cluster }}=failed" >> $GITHUB_OUTPUT
+          else
+            echo "${{ matrix.cluster }}=success" >> $GITHUB_OUTPUT
+          fi
+
+  print-failed-clusters:
+    needs: matrix-check
+    runs-on: ubuntu-latest
+    if: |
+      always() && (
+        needs.matrix-check.outputs.cluster1 == 'failed' ||
+        needs.matrix-check.outputs.cluster2 == 'failed'
+      )
+
+    steps:
+      - name: Print failed clusters
+        run: |
+          failed_clusters=()
+
+          [[ "${{ needs.matrix-check.outputs.cluster1 }}" == "failed" ]] && failed_clusters+=("Ubuntu")
+          [[ "${{ needs.matrix-check.outputs.cluster2 }}" == "failed" ]] && failed_clusters+=("Windows")
+
+          echo "Failed clusters: ${failed_clusters[*]}"
