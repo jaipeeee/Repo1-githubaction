@@ -42,6 +42,7 @@ jobs:
   aggregate-status:
     needs: matrix-check
     runs-on: ubuntu-latest
+    if: failure()
     steps:
       - name: Download ubuntu status artifact
         uses: actions/download-artifact@v4
