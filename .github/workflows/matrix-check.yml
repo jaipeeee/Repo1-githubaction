@@ -18,10 +18,6 @@ jobs:
         run: |
           echo "Deploying on ${{ matrix.cluster }}"
 
-          if [[ "${{ matrix.cluster }}" == "windows-latest" ]]; then
-              exit 1
-          fi
-
       - name: Write status file
         id: write-status
         if: always()
