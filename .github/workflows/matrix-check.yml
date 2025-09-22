@@ -19,7 +19,6 @@ jobs:
         run: |
           echo "Deploying on ${{ matrix.cluster }}"
 
-          # Simulate failure on windows-latest cluster only
           if [[ "${{ matrix.cluster }}" == "windows-latest" ]]; then
               exit 1
           fi
@@ -29,7 +28,6 @@ jobs:
         if: always()
         shell: bash
         run: |
-          # Determine status based on deploy step outcome
           if [[ "${{ steps.deploy.outcome }}" == "failure" ]]; then
             status=failed
           else
@@ -53,28 +51,43 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: status-ubuntu-latest
-          path: ./statuses
+          path: ./statuses/ubuntu
 
       - name: Download windows status artifact
         uses: actions/download-artifact@v4
         with:
           name: status-windows-latest
-          path: ./statuses
+          path: ./statuses/windows
 
       - name: Display failed clusters
         shell: bash
         run: |
           failed_clusters=()
-          for file in ./statuses/status-*.txt; do
-            cluster=$(cut -d'=' -f1 "$file")
-            state=$(cut -d'=' -f2 "$file")
+
+          # Paths to status files
+          ubuntu_status_file=./statuses/ubuntu/status.txt
+          windows_status_file=./statuses/windows/status.txt
+
+          # Check and read ubuntu status
+          if [[ -f "$ubuntu_status_file" ]]; then
+            cluster=$(cut -d'=' -f1 "$ubuntu_status_file")
+            state=$(cut -d'=' -f2 "$ubuntu_status_file")
             if [[ "$state" == "failed" ]]; then
-              if [[ "$cluster" == "ubuntu-latest" ]]; then
-                failed_clusters+=(Ubuntu)
-              elif [[ "$cluster" == "windows-latest" ]]; then
-                failed_clusters+=(Windows)
-              fi
+              failed_clusters+=(Ubuntu)
             fi
-          done
+          else
+            echo "Ubuntu status file not found!"
+          fi
+
+          # Check and read windows status
+          if [[ -f "$windows_status_file" ]]; then
+            cluster=$(cut -d'=' -f1 "$windows_status_file")
+            state=$(cut -d'=' -f2 "$windows_status_file")
+            if [[ "$state" == "failed" ]]; then
+              failed_clusters+=(Windows)
+            fi
+          else
+            echo "Windows status file not found!"
+          fi
 
           echo "Failed clusters: ${failed_clusters[*]}"
