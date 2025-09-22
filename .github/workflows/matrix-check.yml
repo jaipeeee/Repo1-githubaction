@@ -14,21 +14,31 @@ jobs:
     steps:
       - name: Deploy to ${{ matrix.cluster }}
         id: deploy
-        run: |
-          echo "Deploying on ${{ matrix.cluster }}"
-
-      - name: Write status file
-        id: write-status
         continue-on-error: true
         shell: bash
         run: |
-          status=success
+          echo "Deploying on ${{ matrix.cluster }}"
+
+          # Simulate failure on windows-latest cluster only
           if [[ "${{ matrix.cluster }}" == "windows-latest" ]]; then
               exit 1
+          fi
+
+      - name: Write status file
+        id: write-status
+        if: always()
+        shell: bash
+        run: |
+          # Determine status based on deploy step outcome
+          if [[ "${{ steps.deploy.outcome }}" == "failure" ]]; then
+            status=failed
+          else
+            status=success
           fi
           echo "${{ matrix.cluster }}=${status}" > status.txt
 
       - name: Upload status artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: status-${{ matrix.cluster }}
@@ -37,13 +47,14 @@ jobs:
   aggregate-status:
     needs: matrix-check
     runs-on: ubuntu-latest
-    if: failure()
+    if: always()
     steps:
       - name: Download ubuntu status artifact
         uses: actions/download-artifact@v4
         with:
           name: status-ubuntu-latest
           path: ./statuses
+
       - name: Download windows status artifact
         uses: actions/download-artifact@v4
         with:
@@ -51,6 +62,7 @@ jobs:
           path: ./statuses
 
       - name: Display failed clusters
+        shell: bash
         run: |
           failed_clusters=()
           for file in ./statuses/status-*.txt; do
