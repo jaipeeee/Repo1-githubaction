@@ -9,7 +9,9 @@ jobs:
         cluster:
           - ubuntu-latest
           - windows-latest
-          # Add more clusters here as needed
+          - ubuntu-24.04
+          - macos-latest
+          - windows-2025
     runs-on: ${{ matrix.cluster }}
 
     steps:
@@ -21,7 +23,7 @@ jobs:
           echo "Deploying on ${{ matrix.cluster }}"
 
           # Simulate failure on windows-latest for demo
-          if [[ "${{ matrix.cluster }}" == "windows-latest" ]]; then
+          if [[ "${{ matrix.cluster }}" == "windows*" ]]; then
               exit 1
           fi
 
