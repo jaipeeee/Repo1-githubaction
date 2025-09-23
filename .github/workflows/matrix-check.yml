@@ -23,7 +23,7 @@ jobs:
           echo "Deploying on ${{ matrix.cluster }}"
 
           # Simulate failure on windows-latest for demo
-          if [[ "${{ matrix.cluster }}" == "windows*" ]]; then
+          if [[ "${{ matrix.cluster }}" == "^windows" ]]; then
               exit 1
           fi
 
