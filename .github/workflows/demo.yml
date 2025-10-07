@@ -5,7 +5,7 @@ on:
   workflow_dispatch
 
 jobs:
-  print-variable_value:
+  print-variable:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,4 +24,14 @@ jobs:
         testvariable=$(yq '.testvariable' $CONFIG_FILE)
         #echo "testvariable=$testvariable" >> $GITHUB_ENV
         echo "Value of variable $testvariable"
+        exit 1
+  
+  notify-job:
+    needs: print-variable
+    if : needs.print-variable.result == 'failure'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Print Failed
+      run: echo "Failed Job"
 
