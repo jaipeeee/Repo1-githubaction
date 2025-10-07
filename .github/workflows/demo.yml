@@ -35,3 +35,7 @@ jobs:
     - name: Print Failed
       if: needs.print-variable.result=='failure'
       run: echo "Failed Job"
+
+    - name: Print Success
+      if: needs.print-variable.result=='success'
+      run: echo "sab sahi hai"
