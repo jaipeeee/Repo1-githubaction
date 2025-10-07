@@ -2,7 +2,11 @@ name: GitHub Action Workflow Practice
 run-name: '${{ github.actor }} started the pipeline GitHub Action Workflow Practice'
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
+    inputs:
+      target:
+        description: kuch info daal
+        required: true
 
 jobs:
   print-variable:
@@ -38,4 +42,4 @@ jobs:
 
     - name: Print Success
       if: needs.print-variable.result=='success'
-      run: echo "sab sahi hai"
+      run: echo "sab sahi hai ${{ inputs.target }}"
