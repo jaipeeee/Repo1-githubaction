@@ -24,7 +24,7 @@ jobs:
         testvariable=$(yq '.testvariable' $CONFIG_FILE)
         #echo "testvariable=$testvariable" >> $GITHUB_ENV
         echo "Value of variable $testvariable"
-        exit 1
+        #exit 1
   
   notify-job:
     needs: print-variable
