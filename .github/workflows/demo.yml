@@ -28,10 +28,10 @@ jobs:
   
   notify-job:
     needs: print-variable
-    if : needs.print-variable.result == 'failure'
+    if : always()
     runs-on: ubuntu-latest
 
     steps:
     - name: Print Failed
+      if: needs.print-variable.result=='failure'
       run: echo "Failed Job"
-
